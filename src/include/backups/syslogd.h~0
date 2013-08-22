@@ -1,0 +1,192 @@
+/****************************************************************************
+ *
+ *           S Y S L O G D / 2    A UN*X SYSLOGD clone for OS/2
+ *
+ *  ========================================================================
+ *
+ *    Version 2.0       Michael K Greene <greenemk@cox.net>
+ *                      December 2005
+ *
+ *                      Based on original BSD Syslogd
+ *
+ *
+ *         SYSLOGD/2 compiles with OpenWatom 1.4 (www.openwatcom.org).
+ *
+ *  ========================================================================
+ *
+ * Description:  Syslogd/2 header file various items defined.
+ *
+ ***************************************************************************/
+
+#ifndef _SYSLOGD_H
+#define _SYSLOGD_H
+
+#define  SYSLOGDCONF    "syslog.conf"
+
+#define UT_NAMESIZE     32
+#define MAXLINE         1024            /* maximum line length */
+#define LINE_MAX        MAXLINE
+#define MAXSVLINE       120             /* maximum saved line length */
+#define TIMERINTVL      30              /* interval for checking flush, mark */
+
+#define _PATH_UNIX "os2kernel"
+#define _POSIX_PATH_MAX _MAX_PATH
+
+#define DEFUPRI         (LOG_USER|LOG_NOTICE)
+#define DEFSPRI         (LOG_KERN|LOG_CRIT)
+#define FDMASK(fd)      (1 << (fd))
+
+#define dprintf         if (Debug) printf
+
+#define  PIPE_NAME       "\\PIPE\\SYSLOGD"
+#define  PIPE_OPEN_MODE  NP_ACCESS_DUPLEX | NP_NOINHERIT | NP_WRITEBEHIND
+#define  PIPE_MODE       NP_WAIT | NP_READMODE_MESSAGE | NP_TYPE_MESSAGE | 1
+#define  PIPE_TIMEOUT    1000    // milliseconds till pipe times out
+#define  OPEN_MODE       OPEN_ACCESS_READWRITE | OPEN_SHARE_DENYREADWRITE | OPEN_FLAGS_WRITE_THROUGH
+#define  SC_PIPE_MODE    OPEN_ACCESS_READWRITE    |  \
+                         OPEN_SHARE_DENYREADWRITE |  \
+                         OPEN_FLAGS_FAIL_ON_ERROR
+#define  SC_PIPE_OPEN    OPEN_ACTION_OPEN_IF_EXISTS
+
+#define  MAXUNAMES       20      /* maximum number of user names */
+
+#define  MAX_TIMEOUT     10000
+
+/*
+ * Flags to logmsg().
+ */
+#define  IGN_CONS        0x001   /* don't print on console - only printsys( ) */
+#define  SYNC_FILE       0x002   /* do fsync on file after printing - not used */
+#define  ADDDATE         0x004   /* add a date to the message */
+#define  MARK            0x008   /* this message is a mark */
+#define  ADDHOST         0x016
+
+#define  IPC_NAME      "\\socket\\syslog"
+#define  SHMEM_NAME    "\\SHAREMEM\\SYSLOGD"
+#define  MUX_NAME      "\\SEM32\\SYSLOGD\\MEMMUX"
+
+#define _PATH_LOG      "\\socket\\syslog"
+#define _PATH_LOGPID   getos2path("ETC", "syslog.pid")
+#define _PATH_LOGCONF  getos2path("ETC", "syslog.conf")
+#define _PATH_CONSOLE  "con"
+
+#ifdef LARGEBUFFER
+#define  BUFFER_SLOTS  100
+#else
+#define  BUFFER_SLOTS  50
+#endif
+#define  BUFFER_SIZE   1024
+
+typedef struct {
+    uint32_t  index;                           // next free slot
+    uint32_t  slotstat[BUFFER_SLOTS];          // 1- message in slot
+    char  data[BUFFER_SLOTS - 1][BUFFER_SIZE]; // Buffer area messages are alloced from.
+} SHAREMEM;
+
+#define SMEM_SIZE sizeof(SHAREMEM)
+
+/* values for f_type */
+#define F_UNUSED        0       /* unused entry */
+#define F_FILE          1       /* regular file */
+#define F_CONSOLE       2       /* console terminal */
+#define F_FORW          3       /* remote machine */
+
+#include <netdb.h>              // struct filed
+#include <netinet/in.h>
+#include <stdbool.h>
+#include "syslog.h"
+
+
+struct STATS {
+    uint32_t  ipcoverflows;
+    uint32_t  tcpoverflows;
+    uint32_t  snmpoverflows;
+    uint32_t  sysipcrecvmsg;
+    uint32_t  systcprecvmsg;
+    uint32_t  syssnmprecvmsg;
+    uint32_t  sysintrecvmsg;
+    uint32_t  sysdmprecvmsg;
+    uint32_t  bsdprocessmsg;
+    uint32_t  markmsgs;
+    uint32_t  malformed;
+};
+
+struct PROGRAMOPTS {
+    int16_t  DEBUG;
+    int16_t  klog;
+    int16_t  norepeat;
+    int16_t  initialized;
+    int16_t  logpriority;
+    int16_t  securemode;
+    int16_t  forwardmode;
+    int16_t  truncatemode;
+    int16_t  networkchk;
+    int16_t  noiffound;
+    int16_t  highmemmode;
+    int16_t  idlemulti;
+
+    uint32_t  truncatesize;
+    uint32_t  marktimer;
+
+    char  cfgfilename[12];
+    char  cfgfilefull[_MAX_PATH];
+    char  fallbackpath[_MAX_PATH];
+    char  popupfile[20];
+    char  ft2exfile[20];
+    char  sendIP[15];
+    char  sendIF[15];
+    char  bindto[15];
+    char  flashlog[_MAX_PATH];
+
+    bool  threadipc;    // flag to indicate IPC thread start/running
+    bool  threadtcp;    // flag to indicate TCP thread start/running
+};
+
+
+struct CURRENTMSG {
+    int  pri;                        // PRIORITY - FACILITY and SEVERITY
+    char timestamp[16];              // HEADER   - TIMESTAMP
+    char hostname[MAXHOSTNAMELEN+1]; // HEADER   - HOSTNAME
+    char msg[1024];                  // MSG      - TAG and CONTENT
+    char orgmsg[1024];               // Holds original message
+    int  orglen;                     // Holds original msg length
+};
+
+
+/*
+ * This structure represents the files that will have log
+ * copies printed.
+ */
+struct filed {
+    struct  filed *f_next;                    // next in linked list
+
+    int16_t  f_type;                           // entry type, see below
+    int16_t  f_file;                           // file descriptor
+    time_t   f_time;                           // time this was last written
+    uint32_t f_pmask[LOG_NFACILITIES+1];  // priority mask
+
+    union
+    {
+        struct {
+            char    f_hname[MAXHOSTNAMELEN+1];
+            struct  sockaddr_in  f_addr;
+        } f_forw;                             // forwarding address
+        char  f_fname[_MAX_PATH];             // filename for logging
+    } f_un;
+
+    char     f_prevline[1024];                 // last message logged
+    time_t   f_lasttime;                       // time of last occurrence
+    char     f_prevhost[MAXHOSTNAMELEN+1];     // host from which recd.
+    uint32_t f_prevpri;                        // pri of f_prevline
+    uint32_t f_prevlen;                        // length of f_prevline
+    uint32_t f_prevcount;                      // repetition cnt of prevline
+    uint32_t f_repeatcount;                    // number of "repeated" msgs
+
+}; //$* end of filed stucture
+
+void printsys(char *msg);                      // Linux klog - use for popuplog
+void logmsg(int, char *, int);                 // log message
+void handleinternalmsg(int msgnum, int sev);   // print msg from string table
+
+#endif
+

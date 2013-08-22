@@ -1,0 +1,19 @@
+
+#define  Message_1  1
+#define  Message_2  2
+#define  Message_3  3
+#define  Message_4  4
+#define  Message_5  5
+
+
+STRINGTABLE  PRELOAD  MOVEABLE
+
+BEGIN
+
+Message_1   "Error: Invalid or no command line option(s)."
+Message_2   "Error: Failed to open named pipe."
+Message_3   "Error: writing to pipe!"
+Message_4   "Error: reading from pipe!"
+Message_5   "See syslogctrl -h for valid options"
+
+END

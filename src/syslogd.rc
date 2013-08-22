@@ -1,0 +1,126 @@
+
+#define  STARTERROR_1     1
+#define  STARTERROR_2     2
+#define  STARTERROR_3     3
+#define  STARTERROR_4     4
+#define  STARTERROR_5     5
+#define  STARTERROR_6     6
+#define  STARTERROR_7     7
+#define  STARTERROR_8     8
+#define  STARTERROR_9     9
+#define  STARTERROR_10   10
+#define  STARTERROR_11   11
+#define  STARTERROR_12   12
+#define  STARTERROR_13   13
+#define  STARTERROR_14   14
+#define  STARTERROR_15   15
+#define  STARTERROR_16   16
+#define  STARTERROR_17   17
+#define  STARTERROR_18   18
+
+#define  RUNNINGERR_1    50
+#define  RUNNINGERR_2    51
+#define  RUNNINGERR_3    52
+#define  RUNNINGERR_4    53
+#define  RUNNINGERR_5    54
+
+#define  SHUTDOWNMSG_1  200
+#define  SHUTDOWNMSG_2  201
+#define  SHUTDOWNMSG_3  202
+#define  SHUTDOWNMSG_4  203
+#define  SHUTDOWNMSG_5  204
+#define  SHUTDOWNMSG_6  205
+#define  SHUTDOWNMSG_7  206
+#define  SHUTDOWNMSG_8  207
+
+#define  STARTMSG_1     250
+#define  STARTMSG_2     251
+#define  STARTMSG_3     252
+
+#define  DEBUGMSG_1     300
+#define  DEBUGMSG_2     301
+#define  DEBUGMSG_3     302
+#define  DEBUGMSG_4     303
+#define  DEBUGMSG_5     304
+#define  DEBUGMSG_6     305
+#define  DEBUGMSG_7     306
+#define  DEBUGMSG_8     307
+#define  DEBUGMSG_9     308
+#define  DEBUGMSG_10    309
+#define  DEBUGMSG_11    310
+#define  DEBUGMSG_12    311
+
+#define  PIPEERROR_1    400
+#define  PIPEERROR_2    401
+#define  PIPEERROR_3    402
+#define  PIPEERROR_4    403
+#define  PIPEERROR_5    404
+#define  PIPEERROR_6    405
+
+
+STRINGTABLE  PRELOAD  MOVEABLE
+
+BEGIN
+
+STARTERROR_1   "SYSLOGDMP: Failed to create named pipe"
+STARTERROR_2   "SYSLOGDMP: Failed to create named queue"
+STARTERROR_3   "SYSLOGDMP: Failed to allocate shared memory"
+STARTERROR_4   "SYSLOGDMP: ICP failed to create IPCSEM1"
+STARTERROR_5   "SYSLOGDMP: ICP failed to create IPCSEM2"
+STARTERROR_6   "SYSLOGDMP: IPC thread failed to start"
+STARTERROR_7   "SYSLOGDMP: UDP failed to create UDPSEM1"
+STARTERROR_8   "SYSLOGDMP: UDP failed to create UDPSEM2"
+STARTERROR_9   "SYSLOGDMP: UDP thread failed to start"
+STARTERROR_10  "SYSLOGDMP: MUX create failed"
+STARTERROR_11  "SYSLOGDMP: Base allocated memory"
+STARTERROR_12  "SYSLOGDMP: Cannot open syslog.conf start with defaults"
+STARTERROR_13  "SYSLOGDMP: Failed to create MARK TIMER SEM"
+STARTERROR_14  "SYSLOGDMP: Failed to create FLUSH TIMER SEM"
+STARTERROR_15  "SYSLOGDMP: PIPE failed to create PIPESEM1"
+STARTERROR_16  "SYSLOGDMP: PIPE failed to create PIPESEM2"
+STARTERROR_17  "SYSLOGDMP: PIPE thread failed to start"
+STARTERROR_18  "SYSLOGDMP: IDLE: failed to start IDLE SEM"
+
+RUNNINGERR_1   "SYSLOGDMP: Timeout waiting for MUX"
+RUNNINGERR_2   "SYSLOGDMP: Failed to connect named pipe."
+RUNNINGERR_3   "SYSLOGDMP: Failed to read named pipe."
+RUNNINGERR_4   "SYSLOGDMP: Failed to disconnect named pipe."
+RUNNINGERR_5   "Invalid priority, correcting to priority <13>"
+
+SHUTDOWNMSG_1  "SYSLOGIPC:  ICP  thread failed to terminate"
+SHUTDOWNMSG_2  "SYSLOGIPC:  ICP  thread positive terminate"
+SHUTDOWNMSG_3  "SYSLOGUDP:  UDP  thread failed to terminate"
+SHUTDOWNMSG_4  "SYSLOGUDP:  UDP  thread positive terminate"
+SHUTDOWNMSG_5  "SYSLOGSNMP: PIPE thread failed to terminate"
+SHUTDOWNMSG_6  "SYSLOGSNMP: PIPE thread positive terminate"
+SHUTDOWNMSG_7  "SYSLOGPIPE: PIPE thread failed to terminate"
+SHUTDOWNMSG_8  "SYSLOGPIPE: PIPE thread positive terminate"
+
+
+STARTMSG_1     "SYSLOGIPC: IPC thread started"
+STARTMSG_2     "SYSLOGUDP: UDP thread started"
+STARTMSG_3     "SYSLOGUDP: PIPE thread started"
+
+DEBUGMSG_1     "SYSLOGDMP: Running initialize"
+DEBUGMSG_2     "SYSLOGDMP: Running init in BSD code"
+DEBUGMSG_3     "SYSLOGDMP: Running startup commands"
+DEBUGMSG_4     "SYSLOGDMP: Starting mark timer"
+DEBUGMSG_5     "SYSLOGDMP: Base allocated memory"
+DEBUGMSG_6     "SYSLOGDMP: Starting flush timer"
+DEBUGMSG_7     "SYSLOGDMP: DosTimer2 alarm"
+DEBUGMSG_8     "SYSLOGDMP: ** Executing flush"
+DEBUGMSG_9     "SYSLOGDMP: ** Executing klog"
+DEBUGMSG_10    "SYSLOGDMP: ** Executing trunc"
+DEBUGMSG_11    "SYSLOGDMP: ** Executing auto-trunc"
+DEBUGMSG_12    "SYSLOGDMP: ** Executing manual-trunc"
+
+PIPEERROR_1    "SYSLOGPIPE: Failed DosConnectNPipe"
+PIPEERROR_2    "SYSLOGPIPE: Failed DosRead"
+PIPEERROR_3    "SYSLOGPIPE: Failed Dis-DosConnectNPipe"
+PIPEERROR_4    "SYSLOGPIPE: Failed DosWrite"
+PIPEERROR_5    "SYSLOGPIPE: Failed DosWrite X"
+PIPEERROR_6    "SYSLOGPIPE: Trunc Timeout waiting for MUX"
+
+END
+
+
